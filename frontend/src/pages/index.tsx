@@ -8,8 +8,8 @@ interface User {
     email: string;
 }
 
+axios.defaults.baseURL = 'https://postgres-docker-next-node-production.up.railway.app';
 export default function Home() {
-  const apiURL = 'postgres-docker-next-node-production.up.railway.app';
   const [users , setUsers] = useState<User[]>([]);
   const [newUser , setNewUser] = useState({name: '' , email: ''});
   const [updateUser, setUpdateUser] = useState({ id: '', name: '', email: '' });
@@ -18,7 +18,7 @@ export default function Home() {
   useEffect( () => {
      const fetchData  = async () => {
       try{
-        const response = await axios.get(`${apiURL}/users`);
+        const response = await axios.get(`/users`);
         setUsers(response.data.reverse());
       } catch (error) {
         console.error('Error fetching data' , error);
@@ -33,7 +33,7 @@ export default function Home() {
     
       if(newUser.name!=='' && newUser.email!==''){
         try{
-          const response = await axios.post(`${apiURL}/users` , newUser);
+          const response = await axios.post(`/users` , newUser);
           setUsers([response.data , ...users]);
           setNewUser({name: '' , email: ''})
         } catch (error) {
@@ -51,7 +51,7 @@ export default function Home() {
     e.preventDefault();
     if(updateUser.name!=='' && updateUser.email!=='' && updateUser.id!=='') {
       try {
-        await axios.put(`${apiURL}/users/${updateUser.id}`, { name: updateUser.name, email: updateUser.email });
+        await axios.put(`/users/${updateUser.id}`, { name: updateUser.name, email: updateUser.email });
         setUpdateUser({ id: '', name: '', email: '' });
         setUsers(
           users.map((user) => {
@@ -74,7 +74,7 @@ export default function Home() {
   // delete user
   const deleteUser = async (id: number) => {
     try {
-      await axios.delete(`${apiURL}/users/${id}`);
+      await axios.delete(`/users/${id}`);
       setUsers(users.filter((user) => user.id !== id));
     } catch (error) {
       console.error('Error deleting user:', error);
